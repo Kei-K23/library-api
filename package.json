@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "nodemon",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "seed": "prisma db seed"
   },
   "keywords": [],
   "author": "",

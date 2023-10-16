@@ -31,3 +31,32 @@ model Book {
   description    String
   author         Author     @relation(fields: [author_id], references: [id])
 }
+
+model Role {
+  id Int @id @default(autoincrement())
+  role_name String?
+  user User[]
+}
+
+model Session {
+  id String @default(uuid())
+  session_token String @unique
+  user_id Int 
+  user User @relation(fields: [user_id] , references: [id], onDelete: Cascade)
+}
+
+model User {
+  id  Int @id @default(autoincrement())
+  name  String?
+  email String? @unique
+  password String 
+  phone String?
+  role_id Int @default(1)
+  suspended Int @default(0)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  salt String?
+  role Role @relation(fields: [role_id], references: [id])
+  session Session[]
+}
+

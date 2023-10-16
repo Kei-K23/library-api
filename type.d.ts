@@ -12,3 +12,7 @@ type BookType = {
   author_id: number;
   description: string;
 };
+
+type RoleType = {
+  role_name: string;
+};
