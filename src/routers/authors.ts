@@ -1,7 +1,7 @@
 import express from "express";
 import { authorController } from "../controllers/author";
 import { body, param } from "express-validator";
-import { validator } from "../middlewares/validation";
+import { isAdmin, validator } from "../middlewares/validation";
 
 export default function (router: express.Router) {
   router.get("/author", authorController.getAllAuthors);
@@ -20,18 +20,21 @@ export default function (router: express.Router) {
       body("quote").isString().notEmpty(),
     ],
     validator,
+    isAdmin,
     authorController.addNewAuthor
   );
   router.delete(
     "/author/:id",
     [param("id").notEmpty()],
     validator,
+    isAdmin,
     authorController.deleteAuthor
   );
   router.put(
     "/author/:id",
     [param("id").notEmpty()],
     validator,
+    isAdmin,
     authorController.updateAuthor
   );
 }

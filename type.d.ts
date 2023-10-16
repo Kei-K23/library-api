@@ -16,3 +16,20 @@ type BookType = {
 type RoleType = {
   role_name: string;
 };
+
+type SessionType = {
+  session_token: string;
+  user_id: number;
+};
+
+type UserType = {
+  name: string;
+  email: string;
+  password: string;
+  phone?: string;
+  role_id?: number;
+  suspended?: number;
+  created_at?: Date;
+  updated_at?: Date;
+  salt?: string;
+};

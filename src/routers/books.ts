@@ -1,7 +1,7 @@
 import express from "express";
 import { bookController } from "../controllers/book";
 import { body, param } from "express-validator";
-import { validator } from "../middlewares/validation";
+import { isAdmin, validator } from "../middlewares/validation";
 
 export default function (router: express.Router) {
   router.get("/book", bookController.getAllBooks);
@@ -21,18 +21,21 @@ export default function (router: express.Router) {
       body("description").isString().notEmpty(),
     ],
     validator,
+    isAdmin,
     bookController.addNewBook
   );
   router.put(
     "/book/:id",
     [param("id").notEmpty()],
     validator,
+    isAdmin,
     bookController.updateBook
   );
   router.delete(
     "/book/:id",
     [param("id").notEmpty()],
     validator,
+    isAdmin,
     bookController.deleteBook
   );
 }
