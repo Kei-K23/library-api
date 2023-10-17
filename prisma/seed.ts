@@ -1,64 +1,64 @@
 import { getDB } from "../src/lib/db";
 
 async function seed() {
-  // await Promise.all(
-  //   getAllRole().map(async (role) => {
-  //     const db = getDB();
-  //     try {
-  //       await db.role.create({
-  //         data: {
-  //           role_name: role.role_name,
-  //         },
-  //       });
-  //     } catch (e) {
-  //       return console.error("Error creating Role:", e);
-  //     } finally {
-  //       db.$disconnect();
-  //     }
-  //   })
-  // );
-  // await Promise.all(
-  //   getAllAuthor().map(async (author) => {
-  //     const db = getDB();
-  //     try {
-  //       await db.author.create({
-  //         data: {
-  //           name: author.name,
-  //           email: author.email,
-  //           nation: author.nation,
-  //           quote: author.quote,
-  //         },
-  //       });
-  //     } catch (error) {
-  //       console.error("Error creating Author:", error);
-  //     } finally {
-  //       await db.$disconnect();
-  //     }
-  //   })
-  // );
-  // await Promise.all(
-  //   getAllBooks().map(async (book) => {
-  //     const db = getDB();
-  //     try {
-  //       await db.book.create({
-  //         data: {
-  //           title: book.title,
-  //           genre: book.genre,
-  //           published_date: book.published_date,
-  //           description: book.description,
-  //           author_id: book.author_id,
-  //         },
-  //       });
-  //     } catch (error) {
-  //       console.error("Error creating book:", error);
-  //     } finally {
-  //       await db.$disconnect();
-  //     }
-  //   })
-  // );
+  await Promise.all(
+    getAllRole().map(async (role) => {
+      const db = getDB();
+      try {
+        await db.role.create({
+          data: {
+            role_name: role.role_name,
+          },
+        });
+      } catch (e) {
+        return console.error("Error creating Role:", e);
+      } finally {
+        db.$disconnect();
+      }
+    })
+  );
+  await Promise.all(
+    getAllAuthor().map(async (author) => {
+      const db = getDB();
+      try {
+        await db.author.create({
+          data: {
+            name: author.name,
+            email: author.email,
+            nation: author.nation,
+            quote: author.quote,
+          },
+        });
+      } catch (error) {
+        console.error("Error creating Author:", error);
+      } finally {
+        await db.$disconnect();
+      }
+    })
+  );
+  await Promise.all(
+    getAllBooks().map(async (book) => {
+      const db = getDB();
+      try {
+        await db.book.create({
+          data: {
+            title: book.title,
+            genre: book.genre,
+            published_date: book.published_date,
+            description: book.description,
+            author_id: book.author_id,
+          },
+        });
+      } catch (error) {
+        console.error("Error creating book:", error);
+      } finally {
+        await db.$disconnect();
+      }
+    })
+  );
 }
 //! Need to be run for the first time to populate data
-// seed();
+seed();
 
 function getAllRole(): Array<RoleType> {
   return [
