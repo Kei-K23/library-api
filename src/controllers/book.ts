@@ -1,6 +1,7 @@
 import express from "express";
 import { getDB } from "../lib/db";
 import { isEmptyObj, isPropExit } from "../lib/validation";
+import { getUserBySessionToke, setIssueDateToNext7Days } from "../lib/utils";
 
 const db = getDB();
 
@@ -170,6 +171,76 @@ export const bookController = {
     } catch (e) {
       return res.status(500).json({
         message: "something went wrong!",
+      });
+    } finally {
+      db.$disconnect();
+    }
+  },
+  borrowBook: async function (req: express.Request, res: express.Response) {
+    const book_id = parseInt(req.params.id, 10);
+    const session = req.cookies["lib_cookie"];
+
+    const user = await getUserBySessionToke(req, session);
+    const auth_session = await db.session.findUnique({
+      where: { session_token: session },
+    });
+
+    if (!user)
+      return res.status(400).json({
+        status: 403,
+        message: `forbidden to borrow book`,
+      });
+
+    if (!book_id)
+      return res.status(400).json({
+        status: 400,
+        message: `missing request field to borrow book`,
+      });
+    try {
+      const borrow_book = await db.borrow_Basket.create({
+        data: {
+          borrow_book_id: book_id,
+          user_id: user.id,
+        },
+      });
+
+      const expiredDate = await setIssueDateToNext7Days(borrow_book.id);
+      const final_borrow_book = await db.borrow_Basket.update({
+        where: { id: borrow_book.id },
+        data: {
+          issue_date: expiredDate,
+        },
+      });
+
+      const borrowed_book = await db.book.findUnique({
+        where: { id: book_id },
+      });
+
+      if (
+        borrowed_book?.quantity_available &&
+        borrowed_book?.quantity_available <= 0
+      )
+        return res.status(400).json({
+          message: `no more available for this book with id ${book_id}! Try later`,
+        });
+
+      const prev_quantity =
+        borrowed_book?.quantity_available &&
+        borrowed_book?.quantity_available - 1;
+      await db.book.update({
+        where: { id: book_id },
+        data: {
+          quantity_available: prev_quantity,
+        },
+      });
+      return res.status(200).json({
+        message: "successfully borrowed book",
+        data: final_borrow_book,
+      });
+    } catch (e) {
+      return res.status(500).json({
+        message: "something went wrong!",
+        error: e,
       });
     } finally {
       db.$disconnect();

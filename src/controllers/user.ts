@@ -3,6 +3,7 @@ import express from "express";
 import { isEmptyObj } from "../lib/validation";
 import { authentication, expireDate, randomHash } from "../lib/auth";
 import { Prisma } from "@prisma/client";
+import { getUserBySessionToke } from "../lib/utils";
 const db = getDB();
 
 type UserType = {
@@ -126,6 +127,8 @@ export const userController = {
           session_token: authentication(salt_for_sessionToke, user.password),
         },
       });
+      res.locals.user = user;
+
       res.cookie("lib_cookie", session.session_token, {
         domain: "localhost",
         path: "/",
@@ -265,6 +268,61 @@ export const userController = {
           login: "http://localhost:8008/user/login",
           register: "http://localhost:8008/user/register",
         },
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError)
+        return res
+          .status(500)
+          .json({
+            message: e.message,
+          })
+          .end();
+
+      return res
+        .status(500)
+        .json({
+          message: "something went wrong!",
+        })
+        .end();
+    } finally {
+      db.$disconnect();
+    }
+  },
+  getAllBorrowBooks: async function (
+    req: express.Request,
+    res: express.Response
+  ) {
+    const session = req.cookies["lib_cookie"];
+    const id = parseInt(req.params.id, 10);
+
+    if (!id)
+      return res.status(400).json({
+        message: "missing request field",
+      });
+
+    if (!session)
+      return res.status(403).json({
+        message: "forbidden to retrieve borrow data for this user",
+      });
+
+    const user = await getUserBySessionToke(req, session);
+
+    if (!user || id !== user.id)
+      return res.status(403).json({
+        message: "forbidden to retrieve borrow data for this user",
+      });
+
+    try {
+      const borrow_basket = await db.borrow_Basket.findMany({
+        where: { user_id: user.id },
+      });
+      if (isEmptyObj(borrow_basket))
+        return res.status(200).json({
+          message: `there is no book inside borrow basket for this user with id ${user.id}`,
+        });
+      return res.status(200).json({
+        message: `retrieve borrowed books inside borrow basket for this user with id ${user.id}`,
+        data: borrow_basket,
       });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError)

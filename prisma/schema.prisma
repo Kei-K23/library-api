@@ -65,20 +65,20 @@ model User {
 return_basket Return_Basket[]
 }
 
-
 model Borrow_Basket {
   id Int @id @default(autoincrement())
   user_id Int 
-  borrow_book_name String
   borrow_book_id Int
+  borrowed_date DateTime @default(now())
+  issue_date DateTime? 
   user User @relation(fields: [user_id], references: [id])
   book Book @relation(fields: [borrow_book_id], references: [id])
 }
 
+
 model Return_Basket {
   id Int @id @default(autoincrement())
   user_id Int 
-  return_book_name String
   return_book_id Int
   user User @relation(fields: [user_id], references: [id])
   book Book @relation(fields: [return_book_id], references: [id])
