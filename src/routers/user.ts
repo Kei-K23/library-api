@@ -5,6 +5,7 @@ import {
   isOwnerOrAdmin,
   isSessionTokenExist,
   isSuspended,
+  requiredUser,
   validator,
 } from "../middlewares/validation";
 import { body, param } from "express-validator";
@@ -45,5 +46,12 @@ export default function (router: express.Router) {
     validator,
     isOwnerOrAdmin,
     userController.deleteUser
+  );
+  router.get(
+    "/user/borrow/:id",
+    requiredUser,
+    [param("id").notEmpty()],
+    validator,
+    userController.getAllBorrowBooks
   );
 }
