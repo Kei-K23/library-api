@@ -45,4 +45,23 @@ export default function (router: express.Router) {
     validator,
     bookController.borrowBook
   );
+  router.post(
+    "/book/return/:id",
+    requiredUser,
+    [param("id").notEmpty()],
+    validator,
+    bookController.returnBook
+  );
+  router.get(
+    "/user/borrow",
+    requiredUser,
+    isAdmin,
+    bookController.getAllBorrowBooks
+  );
+  router.get(
+    "/user/return",
+    requiredUser,
+    isAdmin,
+    bookController.getAllReturnBooks
+  );
 }

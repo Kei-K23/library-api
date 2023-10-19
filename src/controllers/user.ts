@@ -288,7 +288,7 @@ export const userController = {
       db.$disconnect();
     }
   },
-  getAllBorrowBooks: async function (
+  getAllBorrowBooksForAuthUser: async function (
     req: express.Request,
     res: express.Response
   ) {
@@ -314,7 +314,7 @@ export const userController = {
 
     try {
       const borrow_basket = await db.borrow_Basket.findMany({
-        where: { user_id: user.id },
+        where: { user_id: user.id, is_returned: false },
       });
       if (isEmptyObj(borrow_basket))
         return res.status(200).json({

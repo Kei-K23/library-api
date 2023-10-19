@@ -2,6 +2,7 @@ import express from "express";
 import { getDB } from "../lib/db";
 import { isEmptyObj, isPropExit } from "../lib/validation";
 import { getUserBySessionToke, setIssueDateToNext7Days } from "../lib/utils";
+import { Prisma } from "@prisma/client";
 
 const db = getDB();
 
@@ -181,9 +182,6 @@ export const bookController = {
     const session = req.cookies["lib_cookie"];
 
     const user = await getUserBySessionToke(req, session);
-    const auth_session = await db.session.findUnique({
-      where: { session_token: session },
-    });
 
     if (!user)
       return res.status(400).json({
@@ -196,6 +194,20 @@ export const bookController = {
         status: 400,
         message: `missing request field to borrow book`,
       });
+
+    const already_borrow = await db.borrow_Basket.findFirst({
+      where: {
+        borrow_book_id: book_id,
+        user_id: user.id,
+      },
+    });
+
+    if (already_borrow)
+      return res.status(400).json({
+        status: 400,
+        message: `user already borrow this book with book id ${already_borrow.borrow_book_id}`,
+      });
+
     try {
       const borrow_book = await db.borrow_Basket.create({
         data: {
@@ -242,6 +254,158 @@ export const bookController = {
         message: "something went wrong!",
         error: e,
       });
+    } finally {
+      db.$disconnect();
+    }
+  },
+  returnBook: async function (req: express.Request, res: express.Response) {
+    const borrow_id = parseInt(req.params.id, 10);
+    const session = req.cookies["lib_cookie"];
+
+    const user = await getUserBySessionToke(req, session);
+
+    if (!user)
+      return res.status(400).json({
+        status: 403,
+        message: `forbidden to return book`,
+      });
+
+    if (!borrow_id)
+      return res.status(400).json({
+        status: 400,
+        message: `missing request field to return book`,
+      });
+
+    const already_borrow = await db.borrow_Basket.findFirst({
+      where: {
+        id: borrow_id,
+        user_id: user.id,
+        is_returned: false,
+      },
+    });
+
+    if (!already_borrow)
+      return res.status(400).json({
+        status: 400,
+        message: `there is no borrowed book inside user borrow basket`,
+      });
+
+    try {
+      const borrowed_book_inside_basket = await db.borrow_Basket.update({
+        where: { id: borrow_id },
+        data: {
+          is_returned: true,
+        },
+      });
+
+      const book = await db.book.findUnique({
+        where: { id: borrowed_book_inside_basket.borrow_book_id },
+      });
+
+      const prev_quantity =
+        book?.quantity_available && book?.quantity_available + 1;
+
+      await db.book.update({
+        where: { id: book?.id },
+        data: {
+          quantity_available: prev_quantity,
+        },
+      });
+
+      await db.return_Basket.create({
+        data: {
+          borrow_id: borrow_id,
+        },
+      });
+
+      return res.status(200).json({
+        message: `successfully returned borrowed book`,
+      });
+    } catch (e) {
+      return res.status(500).json({
+        message: "something went wrong!",
+        error: e,
+      });
+    } finally {
+      db.$disconnect();
+    }
+  },
+  getAllBorrowBooks: async function (
+    req: express.Request,
+    res: express.Response
+  ) {
+    const session = req.cookies["lib_cookie"];
+
+    if (!session)
+      return res.status(403).json({
+        message: "forbidden",
+      });
+
+    try {
+      const borrow_basket = await db.borrow_Basket.findMany();
+      if (isEmptyObj(borrow_basket))
+        return res.status(200).json({
+          message: `there is no borrowed book `,
+        });
+      return res.status(200).json({
+        message: `retrieve borrowed books`,
+        data: borrow_basket,
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError)
+        return res
+          .status(500)
+          .json({
+            message: e.message,
+          })
+          .end();
+
+      return res
+        .status(500)
+        .json({
+          message: "something went wrong!",
+        })
+        .end();
+    } finally {
+      db.$disconnect();
+    }
+  },
+  getAllReturnBooks: async function (
+    req: express.Request,
+    res: express.Response
+  ) {
+    const session = req.cookies["lib_cookie"];
+
+    if (!session)
+      return res.status(403).json({
+        message: "forbidden",
+      });
+
+    try {
+      const return_basket = await db.return_Basket.findMany();
+      if (isEmptyObj(return_basket))
+        return res.status(200).json({
+          message: `there is no returned book `,
+        });
+      return res.status(200).json({
+        message: `retrieve returned books`,
+        data: return_basket,
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError)
+        return res
+          .status(500)
+          .json({
+            message: e.message,
+          })
+          .end();
+
+      return res
+        .status(500)
+        .json({
+          message: "something went wrong!",
+        })
+        .end();
     } finally {
       db.$disconnect();
     }

@@ -52,6 +52,6 @@ export default function (router: express.Router) {
     requiredUser,
     [param("id").notEmpty()],
     validator,
-    userController.getAllBorrowBooks
+    userController.getAllBorrowBooksForAuthUser
   );
 }

@@ -32,7 +32,6 @@ model Book {
   quantity_available Int?
   author         Author     @relation(fields: [author_id], references: [id])
   borrow_basket Borrow_Basket[]
-  return_basket Return_Basket[]
 }
 
 model Role {
@@ -62,7 +61,6 @@ model User {
   role Role @relation(fields: [role_id], references: [id])
   session Session[]
   borrow_basket Borrow_Basket[]
-return_basket Return_Basket[]
 }
 
 model Borrow_Basket {
@@ -71,15 +69,15 @@ model Borrow_Basket {
   borrow_book_id Int
   borrowed_date DateTime @default(now())
   issue_date DateTime? 
+  is_returned Boolean @default(false)
   user User @relation(fields: [user_id], references: [id])
   book Book @relation(fields: [borrow_book_id], references: [id])
+return_basket Return_Basket[]
 }
 
 
 model Return_Basket {
   id Int @id @default(autoincrement())
-  user_id Int 
-  return_book_id Int
-  user User @relation(fields: [user_id], references: [id])
-  book Book @relation(fields: [return_book_id], references: [id])
+  borrow_id Int
+  borrow Borrow_Basket @relation(fields: [borrow_id], references: [id])
 }
