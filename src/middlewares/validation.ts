@@ -66,6 +66,7 @@ export async function isAdmin(
       .status(500)
       .json({
         message: "something went wrong!",
+        error: e,
       })
       .end();
   } finally {
@@ -81,6 +82,9 @@ export async function isSessionTokenExist(
   next: express.NextFunction
 ) {
   const session = req.cookies["lib_cookie"];
+
+  if (!session) return next();
+
   try {
     const auth_session = await db.session.findUnique({
       where: {
@@ -105,6 +109,7 @@ export async function isSessionTokenExist(
       .status(500)
       .json({
         message: "something went wrong!",
+        error: e,
       })
       .end();
   } finally {
@@ -191,7 +196,7 @@ export async function isOwnerOrAdmin(
         id: auth_session.user_id,
       },
     });
-    //  auth_user.role_id !== 2 || auth_user.id !== id)
+
     if (!auth_user)
       return res.status(403).json({
         message: "forbidden! you are not authorized person",
@@ -223,4 +228,31 @@ export async function isOwnerOrAdmin(
   }
 
   next();
+}
+
+export async function requiredUser(
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) {
+  try {
+    const session = req.cookies["lib_cookie"];
+
+    if (!session) return next();
+    next();
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError)
+      return res
+        .status(500)
+        .json({
+          message: e.message,
+        })
+        .end();
+    return res
+      .status(500)
+      .json({
+        message: "something went wrong!",
+      })
+      .end();
+  }
 }
