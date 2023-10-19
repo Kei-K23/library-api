@@ -1,6 +1,6 @@
 # Library API
 
-This is small library api that can retrieve books data, authors data, member register and login with session data.
+This is small library api that can retrieve books data, authors data, member register, login with session data, borrow books and return that borrowed books with full authorization and authentication.
 
 ## Installation
 
