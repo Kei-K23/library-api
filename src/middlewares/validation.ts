@@ -66,6 +66,7 @@ export async function isAdmin(
       .status(500)
       .json({
         message: "something went wrong!",
+        error: e,
       })
       .end();
   } finally {
@@ -81,6 +82,9 @@ export async function isSessionTokenExist(
   next: express.NextFunction
 ) {
   const session = req.cookies["lib_cookie"];
+
+  if (!session) return next();
+
   try {
     const auth_session = await db.session.findUnique({
       where: {
@@ -105,6 +109,7 @@ export async function isSessionTokenExist(
       .status(500)
       .json({
         message: "something went wrong!",
+        error: e,
       })
       .end();
   } finally {

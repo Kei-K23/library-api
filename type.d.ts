@@ -11,6 +11,7 @@ type BookType = {
   published_date: Date;
   author_id: number;
   description: string;
+  quantity_available: number;
 };
 
 type RoleType = {

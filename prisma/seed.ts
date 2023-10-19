@@ -1,41 +1,41 @@
 import { getDB } from "../src/lib/db";
 
 async function seed() {
-  await Promise.all(
-    getAllRole().map(async (role) => {
-      const db = getDB();
-      try {
-        await db.role.create({
-          data: {
-            role_name: role.role_name,
-          },
-        });
-      } catch (e) {
-        return console.error("Error creating Role:", e);
-      } finally {
-        db.$disconnect();
-      }
-    })
-  );
-  await Promise.all(
-    getAllAuthor().map(async (author) => {
-      const db = getDB();
-      try {
-        await db.author.create({
-          data: {
-            name: author.name,
-            email: author.email,
-            nation: author.nation,
-            quote: author.quote,
-          },
-        });
-      } catch (error) {
-        console.error("Error creating Author:", error);
-      } finally {
-        await db.$disconnect();
-      }
-    })
-  );
+  // await Promise.all(
+  //   getAllRole().map(async (role) => {
+  //     const db = getDB();
+  //     try {
+  //       await db.role.create({
+  //         data: {
+  //           role_name: role.role_name,
+  //         },
+  //       });
+  //     } catch (e) {
+  //       return console.error("Error creating Role:", e);
+  //     } finally {
+  //       db.$disconnect();
+  //     }
+  //   })
+  // );
+  // await Promise.all(
+  //   getAllAuthor().map(async (author) => {
+  //     const db = getDB();
+  //     try {
+  //       await db.author.create({
+  //         data: {
+  //           name: author.name,
+  //           email: author.email,
+  //           nation: author.nation,
+  //           quote: author.quote,
+  //         },
+  //       });
+  //     } catch (error) {
+  //       console.error("Error creating Author:", error);
+  //     } finally {
+  //       await db.$disconnect();
+  //     }
+  //   })
+  // );
   await Promise.all(
     getAllBooks().map(async (book) => {
       const db = getDB();
@@ -47,6 +47,7 @@ async function seed() {
             published_date: book.published_date,
             description: book.description,
             author_id: book.author_id,
+            quantity_available: book.quantity_available,
           },
         });
       } catch (error) {
@@ -58,7 +59,7 @@ async function seed() {
   );
 }
 //! Need to be run for the first time to populate data
-seed();
+// seed();
 
 function getAllRole(): Array<RoleType> {
   return [
@@ -146,6 +147,7 @@ function getAllAuthor(): Array<AuthorType> {
 function getAllBooks(): Array<BookType> {
   return [
     {
+      quantity_available: 10,
       title: "Hamlet",
       genre: "Tragedy",
       published_date: new Date("1609-12-25"),
@@ -154,6 +156,7 @@ function getAllBooks(): Array<BookType> {
         "Hamlet is a tragedy by William Shakespeare that tells the story of a young prince of Denmark who must uncover the truth about his father's death.",
     },
     {
+      quantity_available: 10,
       title: "Romeo and Juliet",
       genre: "Tragedy",
       published_date: new Date("1597-01-22"),
@@ -162,6 +165,7 @@ function getAllBooks(): Array<BookType> {
         "Romeo and Juliet is a tragedy by William Shakespeare that tells the story of two young lovers from feuding families.",
     },
     {
+      quantity_available: 10,
       title: "Macbeth",
       genre: "Tragedy",
       published_date: new Date("1623-01-07"),
@@ -170,6 +174,7 @@ function getAllBooks(): Array<BookType> {
         "Macbeth is a tragedy by William Shakespeare that explores themes of ambition, power, and guilt.",
     },
     {
+      quantity_available: 10,
       title: "Othello",
       genre: "Tragedy",
       published_date: new Date("1622-01-07"),
@@ -178,6 +183,7 @@ function getAllBooks(): Array<BookType> {
         "Othello is a tragedy by William Shakespeare that revolves around themes of jealousy and manipulation.",
     },
     {
+      quantity_available: 10,
       title: "The Tempest",
       genre: "Comedy",
       published_date: new Date("1623-01-01"),
@@ -186,6 +192,7 @@ function getAllBooks(): Array<BookType> {
         "The Tempest is a comedy by William Shakespeare featuring themes of magic and forgiveness.",
     },
     {
+      quantity_available: 10,
       title: "Hamlet",
       genre: "Tragedy",
       published_date: new Date("1603-01-01"),
@@ -194,6 +201,7 @@ function getAllBooks(): Array<BookType> {
         "Hamlet is a tragedy by William Shakespeare that explores themes of revenge and madness.",
     },
     {
+      quantity_available: 10,
       title: "A Midsummer Night's Dream",
       genre: "Comedy",
       published_date: new Date("1600-01-01"),
@@ -202,6 +210,7 @@ function getAllBooks(): Array<BookType> {
         "A Midsummer Night's Dream is a comedy by William Shakespeare involving love and enchantment.",
     },
     {
+      quantity_available: 10,
       title: "King Lear",
       genre: "Tragedy",
       published_date: new Date("1606-01-01"),
@@ -210,6 +219,7 @@ function getAllBooks(): Array<BookType> {
         "King Lear is a tragedy by William Shakespeare that delves into themes of family and betrayal.",
     },
     {
+      quantity_available: 10,
       title: "As You Like It",
       genre: "Comedy",
       published_date: new Date("1623-01-01"),
@@ -218,6 +228,7 @@ function getAllBooks(): Array<BookType> {
         "As You Like It is a comedy by William Shakespeare focusing on themes of love and disguise.",
     },
     {
+      quantity_available: 10,
       title: "Twelfth Night",
       genre: "Comedy",
       published_date: new Date("1623-01-01"),
@@ -226,6 +237,7 @@ function getAllBooks(): Array<BookType> {
         "Twelfth Night is a comedy by William Shakespeare involving mistaken identity and romance.",
     },
     {
+      quantity_available: 10,
       title: "The Merchant of Venice",
       genre: "Comedy",
       published_date: new Date("1600-01-01"),
@@ -234,6 +246,7 @@ function getAllBooks(): Array<BookType> {
         "The Merchant of Venice is a comedy by William Shakespeare with themes of love and justice.",
     },
     {
+      quantity_available: 10,
       title: "Pride and Prejudice",
       genre: "Novel",
       published_date: new Date("1813-01-28"),
@@ -242,6 +255,7 @@ function getAllBooks(): Array<BookType> {
         "Pride and Prejudice is a novel by Jane Austen that explores themes of love, class, and societal expectations in early 19th-century England.",
     },
     {
+      quantity_available: 10,
       title: "Sense and Sensibility",
       genre: "Novel",
       published_date: new Date("1811-01-01"),
@@ -250,6 +264,7 @@ function getAllBooks(): Array<BookType> {
         "Sense and Sensibility is a novel by Jane Austen exploring the contrast between the Dashwood sisters' personalities.",
     },
     {
+      quantity_available: 10,
       title: "Mansfield Park",
       genre: "Novel",
       published_date: new Date("1814-01-01"),
@@ -258,6 +273,7 @@ function getAllBooks(): Array<BookType> {
         "Mansfield Park is a novel by Jane Austen that follows the life of Fanny Price and her experiences at Mansfield Park.",
     },
     {
+      quantity_available: 10,
       title: "Northanger Abbey",
       genre: "Gothic Novel",
       published_date: new Date("1817-01-01"),
@@ -266,6 +282,7 @@ function getAllBooks(): Array<BookType> {
         "Northanger Abbey is a novel by Jane Austen that parodies gothic fiction and explores the imagination of the protagonist, Catherine Morland.",
     },
     {
+      quantity_available: 10,
       title: "Emma",
       genre: "Novel",
       published_date: new Date("1815-01-01"),
@@ -274,6 +291,7 @@ function getAllBooks(): Array<BookType> {
         "Emma is a novel by Jane Austen that delves into the matchmaking efforts of the eponymous character, Emma Woodhouse.",
     },
     {
+      quantity_available: 10,
       title: "Persuasion",
       genre: "Novel",
       published_date: new Date("1817-01-01"),
@@ -282,6 +300,7 @@ function getAllBooks(): Array<BookType> {
         "Persuasion is a novel by Jane Austen that explores the theme of second chances in love.",
     },
     {
+      quantity_available: 10,
       title: "Lady Susan",
       genre: "Epistolary Novel",
       published_date: new Date("1871-01-01"),
@@ -290,6 +309,7 @@ function getAllBooks(): Array<BookType> {
         "Lady Susan is an epistolary novel by Jane Austen, telling the story through a series of letters.",
     },
     {
+      quantity_available: 10,
       title: "Sanditon",
       genre: "Novel",
       published_date: new Date("1871-01-01"),
@@ -298,6 +318,7 @@ function getAllBooks(): Array<BookType> {
         "Sanditon is an unfinished novel by Jane Austen, depicting the development of a fictional seaside town.",
     },
     {
+      quantity_available: 10,
       title: "Love and Freindship",
       genre: "Epistolary Novel",
       published_date: new Date("1922-01-01"),
@@ -306,6 +327,7 @@ function getAllBooks(): Array<BookType> {
         "Love and Freindship is an epistolary novel by Jane Austen, known for its humor and satire.",
     },
     {
+      quantity_available: 10,
       title: "The Watsons",
       genre: "Novel",
       published_date: new Date("1871-01-01"),
@@ -314,6 +336,7 @@ function getAllBooks(): Array<BookType> {
         "The Watsons is an unfinished novel by Jane Austen, focusing on the life of Emma Watson in her family.",
     },
     {
+      quantity_available: 10,
       title: "Catherine, or The Bower",
       genre: "Novel",
       published_date: new Date("1951-01-01"),
@@ -322,6 +345,7 @@ function getAllBooks(): Array<BookType> {
         "Catherine, or The Bower is an unfinished novel by Jane Austen, depicting the life of Catherine.",
     },
     {
+      quantity_available: 10,
       title: "War and Peace",
       genre: "Historical Fiction",
       published_date: new Date("1869-01-01"),
@@ -330,6 +354,7 @@ function getAllBooks(): Array<BookType> {
         "War and Peace is a novel by Leo Tolstoy that chronicles the French invasion of Russia and the impact of the Napoleonic era on Russian society.",
     },
     {
+      quantity_available: 10,
       title: "War and Peace",
       genre: "Historical Novel",
       published_date: new Date("1869-01-01"),
@@ -338,6 +363,7 @@ function getAllBooks(): Array<BookType> {
         "War and Peace is a historical novel by Leo Tolstoy depicting the events of the Napoleonic era in Russia.",
     },
     {
+      quantity_available: 10,
       title: "Anna Karenina",
       genre: "Novel",
       published_date: new Date("1878-01-01"),
@@ -346,6 +372,7 @@ function getAllBooks(): Array<BookType> {
         "Anna Karenina is a novel by Leo Tolstoy exploring themes of love, infidelity, and societal norms.",
     },
     {
+      quantity_available: 10,
       title: "Resurrection",
       genre: "Novel",
       published_date: new Date("1899-01-01"),
@@ -354,6 +381,7 @@ function getAllBooks(): Array<BookType> {
         "Resurrection is a novel by Leo Tolstoy focusing on themes of justice, morality, and redemption.",
     },
     {
+      quantity_available: 10,
       title: "The Kreutzer Sonata",
       genre: "Novella",
       published_date: new Date("1889-01-01"),
@@ -362,6 +390,7 @@ function getAllBooks(): Array<BookType> {
         "The Kreutzer Sonata is a novella by Leo Tolstoy exploring themes of jealousy and desire.",
     },
     {
+      quantity_available: 10,
       title: "Childhood",
       genre: "Autobiographical Novel",
       published_date: new Date("1852-01-01"),
@@ -370,6 +399,7 @@ function getAllBooks(): Array<BookType> {
         "Childhood is an autobiographical novel by Leo Tolstoy, the first part of his trilogy.",
     },
     {
+      quantity_available: 10,
       title: "Boyhood",
       genre: "Autobiographical Novel",
       published_date: new Date("1854-01-01"),
@@ -378,6 +408,7 @@ function getAllBooks(): Array<BookType> {
         "Boyhood is an autobiographical novel by Leo Tolstoy, the second part of his trilogy.",
     },
     {
+      quantity_available: 10,
       title: "Youth",
       genre: "Autobiographical Novel",
       published_date: new Date("1857-01-01"),
@@ -386,6 +417,7 @@ function getAllBooks(): Array<BookType> {
         "Youth is an autobiographical novel by Leo Tolstoy, the third part of his trilogy.",
     },
     {
+      quantity_available: 10,
       title: "Family Happiness",
       genre: "Novella",
       published_date: new Date("1859-01-01"),
@@ -394,6 +426,7 @@ function getAllBooks(): Array<BookType> {
         "Family Happiness is a novella by Leo Tolstoy exploring the challenges of family life.",
     },
     {
+      quantity_available: 10,
       title: "The Cossacks",
       genre: "Novella",
       published_date: new Date("1863-01-01"),
@@ -402,6 +435,7 @@ function getAllBooks(): Array<BookType> {
         "The Cossacks is a novella by Leo Tolstoy set in the Caucasus and focusing on themes of conflict and love.",
     },
     {
+      quantity_available: 10,
       title: "The Death of Ivan Ilyich",
       genre: "Novella",
       published_date: new Date("1886-01-01"),
@@ -410,6 +444,7 @@ function getAllBooks(): Array<BookType> {
         "The Death of Ivan Ilyich is a novella by Leo Tolstoy exploring the nature of life and death.",
     },
     {
+      quantity_available: 10,
       title: "1984",
       genre: "Dystopian Fiction",
       published_date: new Date("1949-06-08"),
@@ -418,6 +453,7 @@ function getAllBooks(): Array<BookType> {
         "1984 is a dystopian novel by George Orwell that explores themes of totalitarianism, surveillance, and the consequences of a dystopian society.",
     },
     {
+      quantity_available: 10,
       title: "Harry Potter and the Sorcerer's Stone",
       genre: "Fantasy",
       published_date: new Date("1997-06-26"),
@@ -427,6 +463,7 @@ function getAllBooks(): Array<BookType> {
     },
     // Charles Dickens (Author ID: 6)
     {
+      quantity_available: 10,
       title: "Great Expectations",
       genre: "Novel",
       published_date: new Date("1861-01-01"),
@@ -435,6 +472,7 @@ function getAllBooks(): Array<BookType> {
         "Great Expectations is a novel by Charles Dickens that tells the story of the orphan Pip and his journey to becoming a gentleman.",
     },
     {
+      quantity_available: 10,
       title: "A Tale of Two Cities",
       genre: "Historical Novel",
       published_date: new Date("1859-01-01"),
@@ -443,6 +481,7 @@ function getAllBooks(): Array<BookType> {
         "A Tale of Two Cities is a historical novel by Charles Dickens set during the turbulent times of the French Revolution.",
     },
     {
+      quantity_available: 10,
       title: "Oliver Twist",
       genre: "Novel",
       published_date: new Date("1837-01-01"),
@@ -451,6 +490,7 @@ function getAllBooks(): Array<BookType> {
         "Oliver Twist is a novel by Charles Dickens portraying the life of an orphan named Oliver Twist.",
     },
     {
+      quantity_available: 10,
       title: "David Copperfield",
       genre: "Novel",
       published_date: new Date("1850-01-01"),
@@ -459,6 +499,7 @@ function getAllBooks(): Array<BookType> {
         "David Copperfield is a novel by Charles Dickens, widely considered to be semi-autobiographical.",
     },
     {
+      quantity_available: 10,
       title: "Bleak House",
       genre: "Novel",
       published_date: new Date("1853-01-01"),
@@ -467,6 +508,7 @@ function getAllBooks(): Array<BookType> {
         "Bleak House is a novel by Charles Dickens known for its intricate and complex narrative structure.",
     },
     {
+      quantity_available: 10,
       title: "Hard Times",
       genre: "Novel",
       published_date: new Date("1854-01-01"),
@@ -475,6 +517,7 @@ function getAllBooks(): Array<BookType> {
         "Hard Times is a novel by Charles Dickens addressing social and economic issues in Victorian England.",
     },
     {
+      quantity_available: 10,
       title: "The Pickwick Papers",
       genre: "Novel",
       published_date: new Date("1836-01-01"),
@@ -483,6 +526,7 @@ function getAllBooks(): Array<BookType> {
         "The Pickwick Papers is a humorous novel by Charles Dickens, featuring the adventures of the Pickwick Club.",
     },
     {
+      quantity_available: 10,
       title: "Little Dorrit",
       genre: "Novel",
       published_date: new Date("1855-01-01"),
@@ -491,6 +535,7 @@ function getAllBooks(): Array<BookType> {
         "Little Dorrit is a novel by Charles Dickens exploring themes of debt and imprisonment.",
     },
     {
+      quantity_available: 10,
       title: "Nicholas Nickleby",
       genre: "Novel",
       published_date: new Date("1839-01-01"),
@@ -499,6 +544,7 @@ function getAllBooks(): Array<BookType> {
         "Nicholas Nickleby is a novel by Charles Dickens telling the story of the eponymous character's struggles.",
     },
     {
+      quantity_available: 10,
       title: "Martin Chuzzlewit",
       genre: "Novel",
       published_date: new Date("1844-01-01"),
@@ -508,6 +554,7 @@ function getAllBooks(): Array<BookType> {
     },
 
     {
+      quantity_available: 10,
       title: "The Adventures of Huckleberry Finn",
       genre: "Adventure",
       published_date: new Date("1884-12-10"),
@@ -516,6 +563,7 @@ function getAllBooks(): Array<BookType> {
         "The Adventures of Huckleberry Finn is a novel by Mark Twain that follows the adventures of a young boy, Huck, and a runaway slave, Jim, along the Mississippi River.",
     },
     {
+      quantity_available: 10,
       title: "To Kill a Mockingbird",
       genre: "Fiction",
       published_date: new Date("1960-07-11"),
@@ -524,6 +572,7 @@ function getAllBooks(): Array<BookType> {
         "To Kill a Mockingbird is a novel by Harper Lee that addresses issues of racism and injustice in the American South through the eyes of young Scout Finch.",
     },
     {
+      quantity_available: 10,
       title: "Crime and Punishment",
       genre: "Psychological Fiction",
       published_date: new Date("1866-11-14"),
@@ -532,6 +581,7 @@ function getAllBooks(): Array<BookType> {
         "Crime and Punishment is a novel by Fyodor Dostoevsky that delves into the psychological struggles of a young student, Raskolnikov, who commits a murder and grapples with guilt.",
     },
     {
+      quantity_available: 10,
       title: "Murder on the Orient Express",
       genre: "Mystery",
       published_date: new Date("1934-01-01"),
@@ -540,6 +590,7 @@ function getAllBooks(): Array<BookType> {
         "Murder on the Orient Express is a mystery novel by Agatha Christie featuring the detective Hercule Poirot, who investigates a murder on the luxurious Orient Express train.",
     },
     {
+      quantity_available: 10,
       title: "And Then There Were None",
       genre: "Mystery Novel",
       published_date: new Date("1939-01-01"),
@@ -548,6 +599,7 @@ function getAllBooks(): Array<BookType> {
         "And Then There Were None is a mystery novel by Agatha Christie involving ten strangers trapped on an island.",
     },
     {
+      quantity_available: 10,
       title: "The Murder of Roger Ackroyd",
       genre: "Mystery Novel",
       published_date: new Date("1926-01-01"),
@@ -556,6 +608,7 @@ function getAllBooks(): Array<BookType> {
         "The Murder of Roger Ackroyd is a mystery novel by Agatha Christie, known for its innovative narrative technique.",
     },
     {
+      quantity_available: 10,
       title: "Death on the Nile",
       genre: "Mystery Novel",
       published_date: new Date("1937-01-01"),
@@ -564,6 +617,7 @@ function getAllBooks(): Array<BookType> {
         "Death on the Nile is a mystery novel by Agatha Christie featuring the detective Hercule Poirot.",
     },
     {
+      quantity_available: 10,
       title: "The ABC Murders",
       genre: "Mystery Novel",
       published_date: new Date("1936-01-01"),
@@ -572,6 +626,7 @@ function getAllBooks(): Array<BookType> {
         "The ABC Murders is a mystery novel by Agatha Christie in which the victims are alphabetically arranged.",
     },
     {
+      quantity_available: 10,
       title: "Murder in the Cathedral",
       genre: "Play",
       published_date: new Date("1935-01-01"),
@@ -580,6 +635,7 @@ function getAllBooks(): Array<BookType> {
         "Murder in the Cathedral is a verse drama by Agatha Christie depicting the murder of Thomas Becket.",
     },
     {
+      quantity_available: 10,
       title: "A Murder is Announced",
       genre: "Mystery Novel",
       published_date: new Date("1950-01-01"),
@@ -588,6 +644,7 @@ function getAllBooks(): Array<BookType> {
         "A Murder is Announced is a mystery novel by Agatha Christie involving a murder announced in a local newspaper.",
     },
     {
+      quantity_available: 10,
       title: "Peril at End House",
       genre: "Mystery Novel",
       published_date: new Date("1932-01-01"),
@@ -596,6 +653,7 @@ function getAllBooks(): Array<BookType> {
         "Peril at End House is a mystery novel by Agatha Christie featuring the detective Hercule Poirot.",
     },
     {
+      quantity_available: 10,
       title: "The Hollow",
       genre: "Mystery Novel",
       published_date: new Date("1946-01-01"),
@@ -604,6 +662,7 @@ function getAllBooks(): Array<BookType> {
         "The Hollow is a mystery novel by Agatha Christie involving a murder at a country house.",
     },
     {
+      quantity_available: 10,
       title: "Crooked House",
       genre: "Mystery Novel",
       published_date: new Date("1949-01-01"),
